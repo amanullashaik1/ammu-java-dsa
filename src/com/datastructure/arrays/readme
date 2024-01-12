@@ -1,0 +1,19 @@
+Arrays : An array is a data structure consisting of a collection of elements, each identified by at least one array index or key.
+An array is stored such that position of each element can be computed from its index by a mathematical formula.
+Properties:
+-Array can store data of specified type.
+-Elements of an array are located in a contiguous.
+-Each element of an array has a unique index.
+-The size of an array is predefined and cannot be modified.
+
+Types of array:
+-one dimensional array.a[i]
+-multi dimensional array.
+
+When to use :
+- To store multiple variables of same data type.
+- Random access.
+
+When To avoid :
+-Same data type elements.
+-Reserve memory.
