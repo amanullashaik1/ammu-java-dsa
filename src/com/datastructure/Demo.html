@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>LLM Architecture Interactive Demo</title>
+<title>LLM Visualizer</title>
+
 <style>
+
 body{
-font-family:Arial, sans-serif;
+font-family:Arial;
 background:#0f172a;
 color:white;
 text-align:center;
@@ -13,54 +15,55 @@ padding:30px;
 }
 
 .container{
-max-width:900px;
+max-width:1000px;
 margin:auto;
 }
 
 input{
-width:60%;
-padding:10px;
+width:70%;
+padding:12px;
 font-size:16px;
-margin-top:10px;
 }
 
 button{
-padding:10px 20px;
-margin:10px;
-font-size:16px;
-cursor:pointer;
+padding:10px 18px;
+margin:8px;
+font-size:15px;
 border:none;
 background:#38bdf8;
-color:black;
+cursor:pointer;
 }
 
-.box{
+.stage{
 background:#1e293b;
-padding:20px;
 margin-top:20px;
+padding:20px;
 border-radius:8px;
 }
 
 .token{
 display:inline-block;
+padding:8px 12px;
+margin:5px;
 background:#334155;
-padding:6px 10px;
-margin:4px;
-border-radius:4px;
+border-radius:6px;
 }
 
-.highlight{
+.attention{
 background:#22c55e;
 color:black;
 }
 
-.prob{
-margin:5px;
-padding:8px;
-background:#334155;
-display:inline-block;
-border-radius:6px;
+.bar{
+height:20px;
+background:#38bdf8;
+margin:6px auto;
 }
+
+.label{
+margin-top:6px;
+}
+
 </style>
 </head>
 
@@ -68,33 +71,42 @@ border-radius:6px;
 
 <div class="container">
 
-<h1>Interactive LLM Architecture Demo</h1>
-<p>Type a prompt and explore how a language model processes it.</p>
+<h1>LLM Architecture Visualizer</h1>
 
-<input id="prompt" placeholder="Type a sentence..."/>
+<p>Explore how an LLM processes prompts step by step.</p>
+
+<input id="prompt" placeholder="Type your prompt here">
+
 <br>
-<button onclick="tokenize()">1️⃣ Tokenize</button>
-<button onclick="attention()">2️⃣ Attention</button>
-<button onclick="predict()">3️⃣ Next Token</button>
-<button onclick="generate()">4️⃣ Generate</button>
 
-<div class="box">
+<button onclick="tokenize()">1 Tokenize</button>
+<button onclick="embedding()">2 Embedding</button>
+<button onclick="attention()">3 Attention</button>
+<button onclick="predict()">4 Next Token</button>
+<button onclick="generate()">5 Generate</button>
+
+<div class="stage">
 <h3>Tokens</h3>
 <div id="tokens"></div>
 </div>
 
-<div class="box">
-<h3>Attention (important tokens)</h3>
+<div class="stage">
+<h3>Embeddings</h3>
+<div id="embeddings"></div>
+</div>
+
+<div class="stage">
+<h3>Attention Focus</h3>
 <div id="attention"></div>
 </div>
 
-<div class="box">
-<h3>Next Token Prediction</h3>
-<div id="prediction"></div>
+<div class="stage">
+<h3>Next Token Probabilities</h3>
+<div id="probabilities"></div>
 </div>
 
-<div class="box">
-<h3>Generated Output</h3>
+<div class="stage">
+<h3>Generated Response</h3>
 <div id="output"></div>
 </div>
 
@@ -105,70 +117,96 @@ border-radius:6px;
 let tokens=[]
 
 function tokenize(){
+
 let text=document.getElementById("prompt").value
 tokens=text.split(" ")
+
 let html=""
+
 tokens.forEach(t=>{
 html+=`<span class="token">${t}</span>`
 })
+
 document.getElementById("tokens").innerHTML=html
+
+}
+
+function embedding(){
+
+let html=""
+
+tokens.forEach(t=>{
+
+let vec=[]
+
+for(let i=0;i<5;i++){
+vec.push(Math.random().toFixed(2))
+}
+
+html+=`<div>${t} → [${vec.join(", ")}]</div>`
+
+})
+
+document.getElementById("embeddings").innerHTML=html
+
 }
 
 function attention(){
 
 let html=""
-tokens.forEach((t,i)=>{
+
+tokens.forEach(t=>{
 
 let important=Math.random()>0.5
 
-html+=`<span class="token ${important?"highlight":""}">
+html+=`<span class="token ${important?"attention":""}">
 ${t}
 </span>`
 
 })
 
 document.getElementById("attention").innerHTML=html
+
 }
 
 function predict(){
 
-let candidates=[
-"AI",
-"technology",
-"future",
-"system",
-"model",
-"data"
-]
+let words=["AI","data","systems","future","technology"]
 
 let html=""
 
-candidates.forEach(c=>{
+words.forEach(w=>{
 
-let prob=(Math.random()*0.9+0.1).toFixed(2)
+let prob=Math.random()
 
-html+=`<div class="prob">${c} : ${prob}</div>`
+let width=prob*300
+
+html+=`
+<div class="label">${w}</div>
+<div class="bar" style="width:${width}px"></div>
+`
 
 })
 
-document.getElementById("prediction").innerHTML=html
+document.getElementById("probabilities").innerHTML=html
+
 }
 
 function generate(){
 
-let candidates=[
+let endings=[
 "is transforming industries",
-"will change the world",
-"helps automate tasks",
-"improves productivity",
-"learns from data"
+"will change software development",
+"is powered by transformers",
+"learns from massive datasets",
+"helps automate knowledge work"
 ]
 
 let text=document.getElementById("prompt").value
 
-let next=candidates[Math.floor(Math.random()*candidates.length)]
+let result=endings[Math.floor(Math.random()*endings.length)]
 
-document.getElementById("output").innerText=text+" "+next
+document.getElementById("output").innerText=text+" "+result
 
 }
 
