@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>LLM Architecture Interactive Demo</title>
+<style>
+body{
+font-family:Arial, sans-serif;
+background:#0f172a;
+color:white;
+text-align:center;
+padding:30px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+}
+
+input{
+width:60%;
+padding:10px;
+font-size:16px;
+margin-top:10px;
+}
+
+button{
+padding:10px 20px;
+margin:10px;
+font-size:16px;
+cursor:pointer;
+border:none;
+background:#38bdf8;
+color:black;
+}
+
+.box{
+background:#1e293b;
+padding:20px;
+margin-top:20px;
+border-radius:8px;
+}
+
+.token{
+display:inline-block;
+background:#334155;
+padding:6px 10px;
+margin:4px;
+border-radius:4px;
+}
+
+.highlight{
+background:#22c55e;
+color:black;
+}
+
+.prob{
+margin:5px;
+padding:8px;
+background:#334155;
+display:inline-block;
+border-radius:6px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Interactive LLM Architecture Demo</h1>
+<p>Type a prompt and explore how a language model processes it.</p>
+
+<input id="prompt" placeholder="Type a sentence..."/>
+<br>
+<button onclick="tokenize()">1️⃣ Tokenize</button>
+<button onclick="attention()">2️⃣ Attention</button>
+<button onclick="predict()">3️⃣ Next Token</button>
+<button onclick="generate()">4️⃣ Generate</button>
+
+<div class="box">
+<h3>Tokens</h3>
+<div id="tokens"></div>
+</div>
+
+<div class="box">
+<h3>Attention (important tokens)</h3>
+<div id="attention"></div>
+</div>
+
+<div class="box">
+<h3>Next Token Prediction</h3>
+<div id="prediction"></div>
+</div>
+
+<div class="box">
+<h3>Generated Output</h3>
+<div id="output"></div>
+</div>
+
+</div>
+
+<script>
+
+let tokens=[]
+
+function tokenize(){
+let text=document.getElementById("prompt").value
+tokens=text.split(" ")
+let html=""
+tokens.forEach(t=>{
+html+=`<span class="token">${t}</span>`
+})
+document.getElementById("tokens").innerHTML=html
+}
+
+function attention(){
+
+let html=""
+tokens.forEach((t,i)=>{
+
+let important=Math.random()>0.5
+
+html+=`<span class="token ${important?"highlight":""}">
+${t}
+</span>`
+
+})
+
+document.getElementById("attention").innerHTML=html
+}
+
+function predict(){
+
+let candidates=[
+"AI",
+"technology",
+"future",
+"system",
+"model",
+"data"
+]
+
+let html=""
+
+candidates.forEach(c=>{
+
+let prob=(Math.random()*0.9+0.1).toFixed(2)
+
+html+=`<div class="prob">${c} : ${prob}</div>`
+
+})
+
+document.getElementById("prediction").innerHTML=html
+}
+
+function generate(){
+
+let candidates=[
+"is transforming industries",
+"will change the world",
+"helps automate tasks",
+"improves productivity",
+"learns from data"
+]
+
+let text=document.getElementById("prompt").value
+
+let next=candidates[Math.floor(Math.random()*candidates.length)]
+
+document.getElementById("output").innerText=text+" "+next
+
+}
+
+</script>
+
+</body>
+</html>
